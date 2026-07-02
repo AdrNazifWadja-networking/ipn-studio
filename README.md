@@ -25,4 +25,16 @@ cd ipn-studio
 npm install
 npm run dev
 
+
 This project is designed to be easy to deploy. To run it locally:
+
+## Pour exécuter IPN-STUDIO en local sur Windows, assurez-vous d'avoir installé Git pour Windows et Node.js.
+1-Cloner le projet : Ouvrez un terminal (Git Bash ou PowerShell) et exécutez :
+git clone https://github.com/AdrNazifWadja-networking/ipn-studio.git
+cd ipn-studio
+
+2-Installer les dépendances :
+npm install
+npm run dev
+
+3-L'application sera accessible via l'URL indiquée dans votre terminal généralement http://localhost:5173
