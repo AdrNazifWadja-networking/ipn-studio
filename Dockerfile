@@ -6,11 +6,14 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libzip-dev \
+    libicu-dev \
+    libbcmath-dev \
     zip \
     unzip \
     git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+    && docker-php-ext-install gd pdo pdo_mysql bcmath intl zip opcache
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -18,11 +21,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Configurer le répertoire de travail
 WORKDIR /var/www/html
 
-# Copier les fichiers du projet
+# Copier uniquement les fichiers nécessaires pour installer les dépendances (meilleur cache)
+COPY composer.json composer.lock ./
+RUN composer install --no-scripts --no-autoloader --no-dev
+
+# Copier le reste du code source
 COPY . .
 
-# Installer les dépendances PHP et donner les permissions
-RUN composer install --no-dev --optimize-autoloader
+# Finaliser l'installation de Laravel
+RUN composer dump-autoload --optimize
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Configurer Apache pour pointer vers le dossier public
